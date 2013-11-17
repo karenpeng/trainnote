@@ -33,8 +33,16 @@ class Note {
     }
   }
 
-  void trigger() {
-    hit=true;
+  boolean trigger(Train t) {
+    float check = dist(x, y, t.x, t.y);
+    if (check<d/2) {
+      hit = true;
+      return true;
+    }
+    else {
+      hit = false;
+      return false;
+    }
   }
 
   void display() {
