@@ -5,8 +5,11 @@ class Note {
   float x, y; 
   float d;  
   float lastX, lastY;
+  int counter;
+  String name;
+  int t;
 
-  Note(float _x, float _y) {
+  Note(float _x, float _y, String _name) {
     hit=false;
     on=false;
     x=_x;
@@ -14,6 +17,8 @@ class Note {
     d=20;
     lastX=_x-d;
     lastY=_y;
+    counter=0;
+    name=_name;
   }
 
   void onOff() {
@@ -26,7 +31,7 @@ class Note {
   void turn() {
     if (on) {
       float dis = dist(mouseX, mouseY, x, y);
-      if (dis<d*3) {
+      if (dis<d*2) {
         lastX=x+d*(mouseX-x)/dis;
         lastY=y+d*(mouseY-y)/dis;
       }
@@ -34,9 +39,10 @@ class Note {
   }
 
   boolean trigger(Train t) {
-    float check = dist(x, y, t.x, t.y);
-    if (check<d/2) {
+    float check = dist(x, y, t.pos.x, t.pos.y);
+    if (check<1) {
       hit = true;
+      //out.playNote(t);
       return true;
     }
     else {
@@ -45,12 +51,24 @@ class Note {
     }
   }
 
+  void blink() {      
+    if (hit) {
+      counter++;
+    }
+    if (counter>10) {
+      hit=false;
+      counter=0;
+    }
+  }
+
   void display() {
     stroke(0);
     strokeWeight(3);
+    textSize(10);
+    text(name, x, y+24);
     float dis=dist(mouseX, mouseY, x, y);
     if (on && hit) {
-      fill(color(255, 255, 100));
+      fill(color(255, 0, 100));
     }
     else if (on) {
       fill(color(255, 255, 0));
@@ -58,25 +76,28 @@ class Note {
     else {
       fill(255);
     }
+
     ellipse(x, y, d, d);
     strokeWeight(1);
-    line(x, y, lastX, lastY);
+    line(x, y, lastX, lastY);  
+
     if (on) {
       float gapX = lastX-x;
       float gapY = lastY-y;
-      int t;
 
       if (gapY<=0) {
-        t = int(map(acos((lastX-x)/dist(lastX, lastY, x, y)), PI, 0, 0, 300));
+        t = int(map(acos((lastX-x)/dist(lastX, lastY, x, y)), PI, 0, 100, 500));
       }
       else {
-        t = int(map(PI+(acos((lastX-x)/dist(lastX, lastY, x, y))), PI, 2*PI, 300, 600));
+        t = int(map(PI+(acos((lastX-x)/dist(lastX, lastY, x, y))), PI, 2*PI, 500, 900));
       }
       String s = Integer.toString(t);
       if (gapY>=0) {
-        text(s, lastX-10, lastY+20);
+        textSize(20);
+        text(s, lastX-10, lastY+30);
       }
       else {
+        textSize(20);
         text(s, lastX-10, lastY-10);
       }
     }

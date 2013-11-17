@@ -1,94 +1,63 @@
 class Train {
-  /*
-  PVector pos, vel, acc;
-   float maxforce;    
-   float maxspeed;
-   float d;  
-   color c;
-   
-   Train(PVector _p, color _c) {
-   pos=_p;
-   vel=new PVector (0, 0);
-   acc=new PVector (0, 0);
-   maxspeed = 4;
-   maxforce = 1;
-   d=20;
-   c=_c;
-   }
-   
-   void move() {
-   pos.add(vel);
-   vel.add(acc);
-   acc.mult(0);
-   }
-   
-   void appF(PVector f) {
-   acc.add(f);
-   }
-   
-   void seek(PVector tar) {
-  
-   PVector desired = PVector.sub(tar, pos);
-   float d = desired.mag();
-   if (d < 100) {
-   float m = map(d, 0, 100, 0, maxspeed);
-   desired.setMag(m);
-   } 
-   else {
-   desired.setMag(maxspeed);
-   }
-   PVector steer = PVector.sub(desired, vel);
-   steer.limit(maxforce); 
-   appF(steer);
-   */
-  /*
-        PVector desired = PVector.sub(tar,pos);  // A vector pointing from the location to the target
-   
-   // Scale to maximum speed
-   desired.setMag(maxspeed);
-   
-   // Steering = Desired minus velocity
-   PVector steer = PVector.sub(desired,vel);
-   steer.limit(maxforce);  // Limit to maximum steering force
-   
-   appF(steer);
-   
-   }
-   
-   void show() {
-   noStroke();
-   fill(c);
-   ellipse(pos.x, pos.y, d, d);
-   }
-   */
 
-  float x, y, d;
+  PVector pos, vel, acc, lastPos;  
+  float maxforce;
+  float maxspeed;
+  float d;  
   color c;
-  Train(float _x, float _y, color _c) {
-    x=_x;
-    y=_y;
-    c=_c;
+  boolean slowdown;
+  ArrayList<PVector> history = new ArrayList<PVector>();
+
+  Train(PVector _p, color _c) {
+    pos=_p;
+    vel=new PVector (0.0, 0.0);
+    acc=new PVector (0, 0);
+    maxspeed = 6;
+    maxforce = 4;
     d=20;
-  }
-  void move(float a, float b) {
-    float theta=.1;
-    x=lerp(x, a, theta);
-    y=lerp(y, b, theta);
+    c=_c;
+    slowdown = false;
   }
 
-  boolean check(Note sta) {
-    float dis = dist(x, y, sta.x, sta.y);
-    if (dis<=d) {
-      return true;
-    }
-    else {
-      return false;
+  void move() {
+    pos.add(vel);
+    vel.add(acc);
+    acc.mult(0);
+    history.add(pos.get());
+    if (history.size() > 30) {
+      history.remove(0);
     }
   }
+
+  void appF(PVector f) {
+    acc.add(f);
+  }
+
+  void seek(PVector tar) {
+    PVector desired = PVector.sub(tar, pos);
+    float d = desired.mag();
+    if (d < 40) {
+      float m = map(d, 0, 40, .6, maxspeed);
+      desired.setMag(m);
+      slowdown = true;
+    } 
+    else {
+      desired.setMag(maxspeed);
+      slowdown = false;
+    }
+    PVector steer = PVector.sub(desired, vel);
+    steer.limit(maxforce); 
+    appF(steer);
+  }
+
   void show() {
     noStroke();
     fill(c);
-    ellipse(x, y, d, d);
+    ellipse(pos.x, pos.y, d, d);
+    //fill(c, 100);
+    for (PVector v: history) {
+      ellipse(v.x, v.y, d, d);
+    }
   }
 }
 
