@@ -8,6 +8,7 @@ class Note {
   int counter;
   String name;
   int t;
+  String s ;
 
   Note(float _x, float _y, String _name) {
     hit=false;
@@ -86,12 +87,13 @@ class Note {
       float gapY = lastY-y;
 
       if (gapY<=0) {
-        t = int(map(acos((lastX-x)/dist(lastX, lastY, x, y)), PI, 0, 100, 500));
+        t = int(map(acos((lastX-x)/dist(lastX, lastY, x, y)), PI, 0, 0, 18));
       }
       else {
-        t = int(map(PI+(acos((lastX-x)/dist(lastX, lastY, x, y))), PI, 2*PI, 500, 900));
+        t = int(map(PI+(acos((lastX-x)/dist(lastX, lastY, x, y))), PI, 2*PI, 18, 36));
       }
-      String s = Integer.toString(t);
+      //String s = Integer.toString(t);
+      s = melody[t];
       if (gapY>=0) {
         textSize(20);
         text(s, lastX-10, lastY+30);
@@ -103,7 +105,7 @@ class Note {
     }
     fill(0);
     noStroke();
-    ellipse(lastX, lastY, d/4, d/4);
+    ellipse(lastX, lastY, d/3, d/3);
   }
 }
 
