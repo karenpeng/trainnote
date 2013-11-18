@@ -10,6 +10,7 @@ ArrayList lineOneTrains;
 ArrayList lineTwoNotes;
 ArrayList lineTwoTrains;
 
+//each line max train numbers
 int maxTrainNums = 10;
 
 int i, j, interval;
@@ -24,6 +25,7 @@ String [] melody= {
   "D#5", "E5", "F5", "F#5", "G5", "G#5", "A5", "A#5", "B5",
 };
 
+//add train to a line
 void addTrains(ArrayList notes, ArrayList trains) {
   //limit 
   if (trains.size() >= maxTrainNums) {
@@ -31,7 +33,7 @@ void addTrains(ArrayList notes, ArrayList trains) {
   }
   Note startNote = (Note)notes.get(0);
   Train train;
-  train = new Train(new PVector(startNote.x, startNote.y), color(255, random(0, 255), 255));
+  train = new Train(new PVector(startNote.x, startNote.y), color(255, random(0, 100), 255));
   train.setLine(notes);
   trains.add(train);
 }
@@ -105,7 +107,7 @@ void moveTheTrains(ArrayList trains) {
     train.seek();
     train.move();
     train.show();
-    if (train.ended) {
+    if (train.arrived) {
       trains.remove(i);
     }
   }
