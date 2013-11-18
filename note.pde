@@ -39,8 +39,8 @@ class Note {
     }
   }
 
-  boolean trigger(Train t) {
-    float check = dist(x, y, t.pos.x, t.pos.y);
+  boolean trigger(PVector pos) {
+    float check = dist(x, y, pos.x, pos.y);
     if (check<1) {
       hit = true;
       //out.playNote(t);
@@ -107,5 +107,4 @@ class Note {
     noStroke();
     ellipse(lastX, lastY, d/3, d/3);
   }
-}
-
+};

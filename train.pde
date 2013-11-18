@@ -1,13 +1,16 @@
-class Train {
 
-  PVector pos, vel, acc, lastPos;  
+class Train {
+  PVector pos, vel, acc;  
   float maxforce;
   float maxspeed;
   float d;  
   color c;
-  boolean slowdown;
   ArrayList<PVector> history = new ArrayList<PVector>();
 
+  int seekNoteIndex; //seek note's index
+  ArrayList notes;   //line
+  boolean arrived;
+  
   Train(PVector _p, color _c) {
     pos=_p;
     vel=new PVector (0.0, 0.0);
@@ -16,7 +19,15 @@ class Train {
     maxforce = 4;
     d=20;
     c=_c;
-    slowdown = false;
+    seekNoteIndex = 0;
+    arrived = false;
+  }
+
+  void setLine(ArrayList _notes) {
+    notes = _notes;
+    if (notes.size() > 1) {
+      seekNoteIndex = 1;
+    }
   }
 
   void move() {
@@ -33,21 +44,40 @@ class Train {
     acc.add(f);
   }
 
-  void seek(PVector tar) {
+  //seek to target
+  void seek() {
+    if (seekNoteIndex == 0) {
+      return;
+    }
+    Note seekNote = (Note)notes.get(seekNoteIndex);
+    PVector tar = new PVector(seekNote.x, seekNote.y);
     PVector desired = PVector.sub(tar, pos);
     float d = desired.mag();
     if (d < 40) {
       float m = map(d, 0, 40, .6, maxspeed);
       desired.setMag(m);
-      slowdown = true;
     } 
     else {
       desired.setMag(maxspeed);
-      slowdown = false;
     }
     PVector steer = PVector.sub(desired, vel);
     steer.limit(maxforce); 
     appF(steer);
+  }
+
+  //check arrive target station, if arrived, seek the next station
+  void check() {
+    Note seekNote = (Note)notes.get(seekNoteIndex);
+    if (seekNoteIndex == notes.size() - 1) {
+      PVector lastHis = (PVector)history.get(history.size() - 1);
+      float distance = dist(pos.x, pos.y, lastHis.x, lastHis.y);
+      if (distance < 1) {
+        arrived = true;
+      }
+    }
+    if (seekNoteIndex < notes.size() - 1 && seekNote.trigger(pos)) {
+      seekNoteIndex++;
+    }
   }
 
   void show() {
@@ -59,5 +89,5 @@ class Train {
       ellipse(v.x, v.y, d, d);
     }
   }
-}
+};
 
