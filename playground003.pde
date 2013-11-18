@@ -116,11 +116,15 @@ void moveTheTrains(ArrayList trains) {
 void draw() {
   background(60);
   //every 480 frame add a train
-  if (frameCount % 50 == 0) {
+  int lineOneInterval = 100;
+  int lineTwoInterval = 120;
+  if (frameCount % lineOneInterval == 0) {
     addTrains(lineOneNotes, lineOneTrains);
-    addTrains(lineTwoNotes, lineTwoTrains);
   }
-
+  if (frameCount % lineTwoInterval == 0) {
+    addTrains(lineTwoNotes, lineTwoTrains);    
+  }
+  
   drawLines(lineOneNotes, color(255, 200, 255));
   drawLines(lineTwoNotes, color(255, 255, 200));
 

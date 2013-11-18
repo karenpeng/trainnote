@@ -43,11 +43,9 @@ class Note {
     float check = dist(x, y, pos.x, pos.y);
     if (check<1) {
       hit = true;
-      //out.playNote(t);
       return true;
     }
     else {
-      hit = false;
       return false;
     }
   }

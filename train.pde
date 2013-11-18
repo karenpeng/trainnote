@@ -10,7 +10,8 @@ class Train {
   int seekNoteIndex; //seek note's index
   ArrayList notes;   //line
   boolean arrived;
-  
+  boolean headArrived;
+
   Train(PVector _p, color _c) {
     pos=_p;
     vel=new PVector (0.0, 0.0);
@@ -21,13 +22,12 @@ class Train {
     c=_c;
     seekNoteIndex = 0;
     arrived = false;
+    headArrived = false;
   }
 
   void setLine(ArrayList _notes) {
     notes = _notes;
-    if (notes.size() > 1) {
-      seekNoteIndex = 1;
-    }
+    seekNoteIndex = 0;
   }
 
   void move() {
@@ -69,8 +69,11 @@ class Train {
   void check() {
     Note seekNote = (Note)notes.get(seekNoteIndex);
     if (seekNoteIndex == notes.size() - 1) {
-      PVector lastHis = (PVector)history.get(history.size() - 1);
-      float distance = dist(pos.x, pos.y, lastHis.x, lastHis.y);
+      if (!headArrived && seekNote.trigger(pos)) {
+        headArrived = true;
+      }
+      PVector lastHis = (PVector)history.get(0);
+      float distance = dist(seekNote.x, seekNote.y, lastHis.x, lastHis.y);
       if (distance < 1) {
         arrived = true;
       }
