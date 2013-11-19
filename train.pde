@@ -7,8 +7,8 @@ class Train {
   color c;
   ArrayList<PVector> history = new ArrayList<PVector>();
 
-  int seekNoteIndex; //seek note's index
-  ArrayList notes;   //line
+  int seekNodeIndex; //seek node's index
+  ArrayList nodes;   //line
   boolean arrived;
   boolean headArrived;
 
@@ -16,18 +16,18 @@ class Train {
     pos=_p;
     vel=new PVector (0.0, 0.0);
     acc=new PVector (0, 0);
-    maxspeed = 4;
+    maxspeed = 6;
     maxforce = 4;
     d=20;
     c=_c;
-    seekNoteIndex = 0;
+    seekNodeIndex = 0;
     arrived = false;
     headArrived = false;
   }
 
-  void setLine(ArrayList _notes) {
-    notes = _notes;
-    seekNoteIndex = 0;
+  void setLine(ArrayList _nodes) {
+    nodes = _nodes;
+    seekNodeIndex = 0;
   }
 
   void move() {
@@ -35,7 +35,7 @@ class Train {
     vel.add(acc);
     acc.mult(0);
     history.add(pos.get());
-    if (history.size() > 30) {
+    if (history.size() > 20) {
       history.remove(0);
     }
   }
@@ -46,11 +46,11 @@ class Train {
 
   //seek to target
   void seek() {
-    if (seekNoteIndex == 0) {
+    if (seekNodeIndex == 0) {
       return;
     }
-    Note seekNote = (Note)notes.get(seekNoteIndex);
-    PVector tar = new PVector(seekNote.x, seekNote.y);
+    Node seekNode = (Node)nodes.get(seekNodeIndex);
+    PVector tar = new PVector(seekNode.x, seekNode.y);
     PVector desired = PVector.sub(tar, pos);
     float d = desired.mag();
     if (d < 40) {
@@ -67,19 +67,19 @@ class Train {
 
   //check arrive target station, if arrived, seek the next station
   void check() {
-    Note seekNote = (Note)notes.get(seekNoteIndex);
-    if (seekNoteIndex == notes.size() - 1) {
-      if (!headArrived && seekNote.trigger(pos)) {
+    Node seekNode = (Node)nodes.get(seekNodeIndex);
+    if (seekNodeIndex == nodes.size() - 1) {
+      if (!headArrived && seekNode.trigger(pos)) {
         headArrived = true;
       }
       PVector lastHis = (PVector)history.get(0);
-      float distance = dist(seekNote.x, seekNote.y, lastHis.x, lastHis.y);
+      float distance = dist(seekNode.x, seekNode.y, lastHis.x, lastHis.y);
       if (distance < 1) {
         arrived = true;
       }
     }
-    if (seekNoteIndex < notes.size() - 1 && seekNote.trigger(pos)) {
-      seekNoteIndex++;
+    if (seekNodeIndex < nodes.size() - 1 && seekNode.trigger(pos)) {
+      seekNodeIndex++;
     }
   }
 

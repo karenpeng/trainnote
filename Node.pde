@@ -1,4 +1,4 @@
-class Note {
+class Node {
   boolean hit;
   boolean on;
   boolean drag;
@@ -10,13 +10,13 @@ class Note {
   int t;
   String s ;
 
-  Note(float _x, float _y, String _name) {
+  Node(float _x, float _y, String _name) {
     hit=false;
     on=false;
     x=_x;
     y=_y;
     d=20;
-    lastX=_x-d;
+    lastX=_x-d*1.5;
     lastY=_y;
     counter=0;
     name=_name;
@@ -33,8 +33,8 @@ class Note {
     if (on) {
       float dis = dist(mouseX, mouseY, x, y);
       if (dis<d*2) {
-        lastX=x+d*(mouseX-x)/dis;
-        lastY=y+d*(mouseY-y)/dis;
+        lastX=x+d*(mouseX-x)/dis*1.5;
+        lastY=y+d*(mouseY-y)/dis*1.5;
       }
     }
   }
@@ -67,7 +67,7 @@ class Note {
     text(name, x, y+24);
     float dis=dist(mouseX, mouseY, x, y);
     if (on && hit) {
-      fill(color(255, 0, 100));
+      fill(color(255, 100, 0));
     }
     else if (on) {
       fill(color(255, 255, 0));
@@ -103,6 +103,6 @@ class Note {
     }
     fill(0);
     noStroke();
-    ellipse(lastX, lastY, d/3, d/3);
+    ellipse(lastX, lastY, d/2, d/2);
   }
 };
