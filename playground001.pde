@@ -4,15 +4,15 @@ import ddf.minim.ugens.*;
 Minim minim;
 AudioOutput out;
 
-ArrayList nodes;
-ArrayList lineOnenodes;
-ArrayList lineOneTrains;
-ArrayList lineTwonodes;
-ArrayList lineTwoTrains;
-ArrayList lineThreenodes;
-ArrayList lineThreeTrains;
-ArrayList lineFournodes;
-ArrayList lineFourTrains;
+ArrayList <Node> nodes;
+ArrayList <Node> lineOnenodes;
+ArrayList <Train> lineOneTrains;
+ArrayList <Node> lineTwonodes;
+ArrayList <Train> lineTwoTrains;
+ArrayList <Node> lineThreenodes;
+ArrayList <Train> lineThreeTrains;
+ArrayList <Node> lineFournodes;
+ArrayList <Train> lineFourTrains;
 
 //each line max train numbers
 int maxTrainNums = 10;
@@ -30,7 +30,7 @@ String [] melody= {
 };
 
 //add train to a line
-void addTrains(ArrayList nodes, ArrayList trains, color c) {
+void addTrains(ArrayList<Node> nodes, ArrayList<Train> trains, color c) {
   //limit 
   if (trains.size() >= maxTrainNums) {
     return;
@@ -140,21 +140,21 @@ void setup() {
   println("init ok!");
 }
 
-void drawLines(ArrayList nodes, color c) {
+void drawLines(ArrayList<Node> nodes, color c) {
   Node n, m;
   for (int i = 0; i < nodes.size() - 1; i++) {
-    n = (Node)nodes.get(i);
-    m = (Node)nodes.get(i+1);
+    n = nodes.get(i);
+    m = nodes.get(i+1);
     stroke(c);
     strokeWeight(18);
     line(n.x, n.y, m.x, m.y);
   }
 }
 
-void moveTheTrains(ArrayList trains) {
+void moveTheTrains(ArrayList<Train> trains) {
   Train train;
   for (int i = 0; i < trains.size(); i++) {
-    train = (Train)trains.get(i);
+    train = trains.get(i);
     train.check();    
     train.seek();
     train.move();
@@ -196,11 +196,13 @@ void draw() {
   moveTheTrains(lineFourTrains);
   //desplay nodes
   for (int i=0; i<nodes.size();i++) {
-    n = (Node)nodes.get(i);
+    n = nodes.get(i);
     n.display();
     n.blink();
+    n.hit();
     if (n.on && n.hit) {
       out.playNote(n.s);
+      println("omg!");
     }
   }
   int frame=int(frameRate);
@@ -208,15 +210,13 @@ void draw() {
 }
 
 void mousePressed() {
-  for (int i=0; i<nodes.size();i++) {
-    n = (Node)nodes.get(i);
+  for (Node n: nodes) {
     n.onOff();
   }
 }
 
 void mouseDragged() {
-  for (int i=0; i<nodes.size();i++) {
-    n = (Node)nodes.get(i);
+  for (Node n: nodes) {
     n.turn();
   }
 }

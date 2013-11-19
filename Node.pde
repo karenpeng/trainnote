@@ -6,19 +6,23 @@ class Node {
   float d;  
   float lastX, lastY;
   int counter;
+  int counterH;
   String name;
   int t;
   String s ;
+  boolean blink;
 
   Node(float _x, float _y, String _name) {
     hit=false;
     on=false;
+    blink=false;
     x=_x;
     y=_y;
     d=20;
     lastX=_x-d*1.5;
     lastY=_y;
     counter=0;
+    counterH=0;
     name=_name;
   }
 
@@ -42,21 +46,34 @@ class Node {
   boolean trigger(PVector pos) {
     float check = dist(x, y, pos.x, pos.y);
     if (check<1) {
+      blink = true;
       hit = true;
       return true;
     }
     else {
+      //hit = false;
       return false;
     }
   }
 
   void blink() {      
-    if (hit) {
+    if (blink) {
       counter++;
     }
     if (counter>10) {
-      hit=false;
+      blink=false;
       counter=0;
+    }
+  }
+  
+    void hit() {      
+    if (hit) {
+      counterH++;
+      //hit=false;
+    }
+    if (counter>1) {
+      hit=false;
+      counterH=0;
     }
   }
 
@@ -66,7 +83,7 @@ class Node {
     textSize(10);
     text(name, x, y+24);
     float dis=dist(mouseX, mouseY, x, y);
-    if (on && hit) {
+    if (on && blink) {
       fill(color(255, 100, 0));
     }
     else if (on) {
